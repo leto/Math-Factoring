@@ -1,8 +1,9 @@
 Build.PL
 Changes
-MANIFEST
-README
 lib/Math/Factoring.pm
+MANIFEST
+MANIFEST.SKIP
+README
 t/00-load.t
-t/pod-coverage.t
+t/boilerplate.t
 t/pod.t
