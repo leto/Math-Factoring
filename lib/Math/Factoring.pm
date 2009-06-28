@@ -2,6 +2,11 @@ package Math::Factoring;
 
 use warnings;
 use strict;
+use Math::GMPz qw/:mpz/;
+use base 'Exporter';
+use constant GMP => 'Math::GMPz';
+our @EXPORT_OK = qw/factor/;
+our @EXPORT = qw//;
 
 =head1 NAME
 
@@ -15,6 +20,13 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+sub factor($)
+{
+    my $n   = GMP->new($_[0]);
+    my @factors;
+
+    return @factors;
+}
 
 =head1 SYNOPSIS
 
