@@ -3,6 +3,7 @@ package Math::Factoring;
 use warnings;
 use strict;
 use Math::GMPz qw/:mpz/;
+use Math::Primality qw/is_prime/;
 use base 'Exporter';
 use constant GMP => 'Math::GMPz';
 our @EXPORT_OK = qw/factor/;
@@ -24,13 +25,62 @@ sub factor($)
 {
     my $n   = GMP->new($_[0]);
     my @factors;
+    if ($n >= 0 and $n <= 3) {
+        print "small factor\n";
+        push @factors, "$n"; # won't work without stringification ???
+    } else {
+        @factors = _factor_pollard_rho($n);
+    }
 
     return @factors;
+}
+sub _random()
+{
+    my $n   = GMP->new(int rand(1e9) );
+    my $state = rand_init($n);
+    my $rand = GMP->new;
+    Rmpz_urandomm($rand, $state, $n);
+    return $rand;
+}
+
+sub _factor_pollard_rho($$$)
+{
+    my ($n,$a,$y0) = @_;
+    my ($x,$y,$q,$d) = map { GMP->new } ( 1 .. 4 );
+    my ($i,$j,$x0) = (1,1);
+    $q = 1; $x = $x0; $y = $x0;
+
+    do {
+        $x  = ($x*$x + $a ) % $n;
+        $y  = ($y*$y + $a ) % $n;
+        $q *= ($x - $y);
+        $q %= $n;
+
+        $i++;
+        $j = 1 if !$j;
+        if( ($i % $j ) == 0 ) {
+            $j++;
+            Rmpz_gcd($d, $q, $n);
+            if ($d != 1) {
+                if (!is_prime($d)) {
+                    return _factor_pollar_rho( $d,
+                            (_random() & 32) - 16,
+                             _random() & 31 );
+                } else {
+                    return $d;
+                }
+            }
+        }
+
+    } while (1);
+
 }
 
 =head1 SYNOPSIS
 
     use Math::Factoring;
+    my $n = 42;
+    my @factors = factor(42); # 2 3 7
 
 =head1 AUTHOR
 
