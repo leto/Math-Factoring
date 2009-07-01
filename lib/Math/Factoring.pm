@@ -8,6 +8,7 @@ use base 'Exporter';
 use constant GMP => 'Math::GMPz';
 our @EXPORT_OK = qw/factor/;
 our @EXPORT = qw//;
+use Data::Dumper;
 
 =head1 NAME
 
@@ -21,46 +22,25 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-sub factor($)
-{
-    my $n   = GMP->new($_[0]);
-    my @factors;
-    if ($n >= 0 and $n <= 3) {
-        push @factors, "$n"; # won't work without stringification ???
-    } else {
-        my ($a,$x0) = (-1,3);
-        my $t;
-        while( !is_prime($n) ) {
-            $t = _factor_pollard_rho($n,$a,$x0);
-
-            last if $t == 0;
-
-            push @factors, "$n";
-            $n /= $t;
-        }
-        push @factors, "$n";
-    }
-
-    return @factors;
-}
 sub _random()
 {
-    my $n   = GMP->new(int rand(1e9) );
+    my $n   = GMP->new(int rand(1e15) );
     my $state = rand_init($n);
     my $rand = GMP->new;
-    Rmpz_urandomm($rand, $state, $n);
+    Rmpz_urandomm($rand, $state, $n,1);
     return $rand;
 }
 
 sub _factor_pollard_rho($$$)
 {
-    my ($n,$a,$y0) = @_;
+    my ($n,$a,$x0) = @_;
     my ($x,$y,$q,$d) = map { GMP->new } ( 1 .. 4 );
-    my ($i,$j,$x0) = (1,1);
+    my ($i,$j) = (1,1);
     $q = 1; $x = $x0; $y = $x0;
 
     do {
         $x  = ($x*$x + $a ) % $n;
+        $y  = ($y*$y + $a ) % $n;
         $y  = ($y*$y + $a ) % $n;
         $q *= ($x - $y);
         $q %= $n;
@@ -72,7 +52,8 @@ sub _factor_pollard_rho($$$)
             Rmpz_gcd($d, $q, $n);
             if ($d != 1) {
                 if (!is_prime($d)) {
-                    return _factor_pollar_rho( $d,
+                    no warnings 'prototype';
+                    return _factor_pollard_rho( $d,
                             (_random() & 32) - 16,
                              _random() & 31 );
                 } else {
@@ -80,11 +61,32 @@ sub _factor_pollard_rho($$$)
                 }
             }
         }
-
+        return 0;
     } while (1);
 
 }
 
+sub factor($)
+{
+    my $n   = GMP->new($_[0]);
+    my @factors;
+    if ($n >= 0 and $n <= 3) {
+        return "$n";
+    } else {
+        my ($a,$x0) = (-1,3);
+        my $t;
+        while( !is_prime($n) ) {
+            $t = _factor_pollard_rho($n,$a,$x0);
+            warn "found t=$t";
+            last if $t == 0;
+            push @factors, "$t";
+            $n /= $t;
+        }
+        push @factors, "$n";
+    }
+
+    return sort { $a <=> $b } @factors;
+}
 =head1 SYNOPSIS
 
     use Math::Factoring;
