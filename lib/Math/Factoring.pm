@@ -26,10 +26,19 @@ sub factor($)
     my $n   = GMP->new($_[0]);
     my @factors;
     if ($n >= 0 and $n <= 3) {
-        print "small factor\n";
         push @factors, "$n"; # won't work without stringification ???
     } else {
-        @factors = _factor_pollard_rho($n);
+        my ($a,$x0) = (-1,3);
+        my $t;
+        while( !is_prime($n) ) {
+            $t = _factor_pollard_rho($n,$a,$x0);
+
+            last if $t == 0;
+
+            push @factors, "$n";
+            $n /= $t;
+        }
+        push @factors, "$n";
     }
 
     return @factors;
