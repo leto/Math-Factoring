@@ -42,9 +42,9 @@ Integer factor(Integer n, int a_int, int x0)
 		if (!isprime(d))
 			return factor(d, (random() & 32) - 16, random() & 31);
 		else return d;
-		}
-	    } // if ( (i % j) == 0)
-	} // while n != 1
+       }
+    } 
+  } // while n != 1
 	return 0;
 }
 
@@ -55,10 +55,8 @@ main (int argc, char *argv[])
 	int x0, a;
 	int p;
 
-	if (argc != 2) {
-	   cerr << "Usage: " << argv[0] << " NumberToFactor" << endl;
-	   return -1;
-	   }
+    if (argc != 2) { cerr << "Usage: " << argv[0] << " NumberToFactor" << endl;
+    return -1; }
 
 	n = argv[1];
 

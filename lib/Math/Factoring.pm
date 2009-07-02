@@ -28,12 +28,14 @@ sub _random()
     my $state = rand_init($n);
     my $rand = GMP->new;
     Rmpz_urandomm($rand, $state, $n,1);
+    #warn "return rand=$rand";
     return $rand;
 }
 
 sub _factor_pollard_rho($$$)
 {
     my ($n,$a,$x0) = @_;
+    warn "_factor_pollard($n,$a,$x0)\n";
     my ($x,$y,$q,$d) = map { GMP->new } ( 1 .. 4 );
     my ($i,$j) = (1,1);
     $q = 1; $x = $x0; $y = $x0;
@@ -61,8 +63,8 @@ sub _factor_pollard_rho($$$)
                 }
             }
         }
-        return 0;
-    } while (1);
+    };
+    return 0;
 
 }
 
@@ -77,7 +79,7 @@ sub factor($)
         my $t;
         while( !is_prime($n) ) {
             $t = _factor_pollard_rho($n,$a,$x0);
-            warn "found t=$t";
+            warn "found t=$t,n=$n";
             last if $t == 0;
             push @factors, "$t";
             $n /= $t;
