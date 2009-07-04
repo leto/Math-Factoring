@@ -6,7 +6,7 @@ use Math::GMPz qw/:mpz/;
 use Math::Primality qw/is_prime/;
 use base 'Exporter';
 use constant GMP => 'Math::GMPz';
-our @EXPORT_OK = qw/factor/;
+our @EXPORT_OK = qw/factor factor_trial/;
 our @EXPORT = qw//;
 use Data::Dumper;
 
@@ -68,6 +68,26 @@ sub _factor_pollard_rho($$$)
 
 }
 
+sub factor_trial($)
+{
+    my $n   = GMP->new($_[0]);
+    my @factors;
+    if ($n >= 0 and $n <= 3) {
+        return "$n";
+    }
+    my $sqrt = GMP->new;
+    Rmpz_sqrt($sqrt, $n);
+
+    for my $factor (2..$sqrt) {
+        my $mod = $n % $factor;
+        if( $mod == 0 && is_prime($factor) ) {
+            push @factors,"$factor";
+        }
+    }
+    @factors = ("$n") unless @factors;
+    return @factors;
+}
+
 sub factor($)
 {
     my $n   = GMP->new($_[0]);
@@ -75,7 +95,7 @@ sub factor($)
     if ($n >= 0 and $n <= 3) {
         return "$n";
     } else {
-        my ($a,$x0) = (-1,3);
+        my ($a,$x0) = (1,3);
         my $t;
         while( !is_prime($n) ) {
             $t = _factor_pollard_rho($n,$a,$x0);
