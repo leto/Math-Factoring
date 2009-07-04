@@ -32,6 +32,9 @@ sub _random()
     return $rand;
 }
 
+# this is fast but only works for certain numbers
+# which satisfy smoothness constraints that are currently not being 
+# checked for
 sub _factor_pollard_rho($$$)
 {
     my ($n,$a,$x0) = @_;
@@ -68,6 +71,12 @@ sub _factor_pollard_rho($$$)
 
 }
 
+sub factor($)
+{
+    goto \&factor_trial;
+}
+
+# this can be sped up a lot by using the Rmpz_* functions
 sub factor_trial($)
 {
     my $n   = GMP->new($_[0]);
@@ -78,17 +87,27 @@ sub factor_trial($)
     my $sqrt = GMP->new;
     Rmpz_sqrt($sqrt, $n);
 
-    for my $factor (2..$sqrt) {
-        my $mod = $n % $factor;
-        if( $mod == 0 && is_prime($factor) ) {
-            push @factors,"$factor";
+    my $cur = GMP->new(2);
+
+    while( $cur*$cur <= $n ) {
+        my $mod = $n % $cur;
+        if( $mod == 0 ) {
+            push @factors,"$cur";
+            $n = $n / $cur;
+        } else {
+            $cur++;
         }
     }
-    @factors = ("$n") unless @factors;
-    return @factors;
+    if (@factors == 0) {
+        return ("$n");
+    }
+    if ($n != 1) {
+        push @factors,"$n";
+    }
+    return sort { $a <=> $b } @factors;
 }
 
-sub factor($)
+sub factor_pollard_rho($)
 {
     my $n   = GMP->new($_[0]);
     my @factors;
