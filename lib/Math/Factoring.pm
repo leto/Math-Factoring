@@ -75,34 +75,45 @@ sub factor($)
 {
     goto \&factor_trial;
 }
-
+# this gets rid of prototype warnings
+sub factor_trial($);
 # this can be sped up a lot by using the Rmpz_* functions
 sub factor_trial($)
 {
     my $n   = GMP->new($_[0]);
-    my @factors;
     if ($n >= 0 and $n <= 3) {
-        return "$n";
+        return ("$n");
     }
     my $sqrt = GMP->new;
     Rmpz_sqrt($sqrt, $n);
 
-    my $cur = GMP->new(2);
+    # speed up factors of perfect squares
 
-    while( $cur*$cur <= $n ) {
-        my $mod = $n % $cur;
-        if( $mod == 0 ) {
+    if( Rmpz_perfect_square_p($n) ){
+        my @root_factors = factor_trial($sqrt);
+        return map { ("$_","$_") } @root_factors;
+    }
+
+    my @factors;
+    my $cur = GMP->new(2);
+    my ($mod,$square) = (GMP->new,GMP->new);
+    Rmpz_mul($square,$cur,$cur);
+
+    while( $square <= $n ) {
+        Rmpz_mod($mod,$n,$cur);
+        if( Rmpz_cmp_ui($mod,0) == 0 ) {
             push @factors,"$cur";
-            $n = $n / $cur;
+            Rmpz_tdiv_q($n,$n,$cur);  # $n = $n / $cur;
         } else {
-            $cur++;
+            Rmpz_add_ui($cur,$cur,1); # $cur++
         }
+        Rmpz_mul($square,$cur,$cur);
     }
     if (@factors == 0) {
-        return ("$n");
+        return ("$n");                # it was prime
     }
-    if ($n != 1) {
-        push @factors,"$n";
+    if ( Rmpz_cmp_ui($n,1) ) {
+        push @factors,"$n";           # add the last factor
     }
     return sort { $a <=> $b } @factors;
 }

@@ -1,9 +1,8 @@
 #!perl
 
-use Test::More tests => 17;
+use Test::More tests => 20;
 use Math::Factoring qw/factor factor_trial/;
 use Data::Dumper;
-
 
 my $factor_data = [
     # n     factors (from smallest to largest)
@@ -24,6 +23,9 @@ my $factor_data = [
     [ 858    => [ 2,3,11,13 ] ],
     [ 901    => [ 17, 53 ] ],
     [ 2**10  => [ (2) x 10 ] ],
+    [ 101**2  => [ 101,101 ] ],
+    [ 2*13**5 => [ 2, (13) x 5 ] ],
+    [ (101**2)*(53**2)  => [ 53,53,101,101 ] ],
 ];
 
 for my $f (@$factor_data) {
