@@ -80,10 +80,11 @@ sub factor_trial($);
 # this can be sped up a lot by using the Rmpz_* functions
 sub factor_trial($)
 {
-    my $n   = GMP->new($_[0]);
+    my $n = shift;
     if ($n >= 0 and $n <= 3) {
         return ("$n");
     }
+    $n   = GMP->new($n);
     my $sqrt = GMP->new;
     Rmpz_sqrt($sqrt, $n);
 
