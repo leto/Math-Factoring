@@ -10,6 +10,17 @@ our @EXPORT_OK = qw/factor factor_trial/;
 our @EXPORT = qw//;
 use Data::Dumper;
 
+# this gets rid of prototype warnings
+sub factor_trial($);
+
+my @small_primes = qw/
+5   7   11  13  17  19  23  29  31  37  41  43  47  53  59  61  67  71 73  79
+83  89  97  101     103     107     109     113     127     131     137     139
+149     151     157     163     167     173 179     181     191     193     197
+1p99     211     223     227     229     233     239   241     251     257
+/;
+my %small_primes = map { $_ => 1 } @small_primes;
+
 =head1 NAME
 
 Math::Factoring - Advanced Factoring Algorithms
@@ -73,11 +84,14 @@ sub _factor_pollard_rho($$$)
 
 sub factor($)
 {
-    goto \&factor_trial;
+    my ($n) = @_;
+    if ($n <= 257 && $small_primes{$n} ){
+        return ("$n");
+    } else {
+        return factor_trial($n);
+    }
 }
-# this gets rid of prototype warnings
-sub factor_trial($);
-# this can be sped up a lot by using the Rmpz_* functions
+
 sub factor_trial($)
 {
     my $n = shift;
