@@ -21,17 +21,7 @@ my @small_primes = qw/
 /;
 my %small_primes = map { $_ => 1 } @small_primes;
 
-=head1 NAME
-
-Math::Factoring - Advanced Factoring Algorithms
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
+# ABSTRACT: Math::Factoring - Advanced Factoring Algorithms
 
 sub _random()
 {
@@ -162,7 +152,7 @@ sub factor_pollard_rho($)
 
 =head1 AUTHOR
 
-Jonathan Leto, C<< <jonathan at leto.net> >>
+Jonathan "Duke" Leto, C<< <jonathan at leto.net> >>
 
 =head1 BUGS
 
@@ -170,7 +160,8 @@ Please report any bugs or feature requests to C<bug-math-factoring at rt.cpan.or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Factoring>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
+You can also submit patches or file a Github issue:
+https://github.com/leto/Math-Factoring
 
 
 =head1 SUPPORT
@@ -208,7 +199,7 @@ L<http://search.cpan.org/dist/Math::Factoring>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Jonathan Leto, all rights reserved.
+Copyright 2009-2012 Jonathan "Duke" Leto, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
