@@ -21,17 +21,69 @@ my @small_primes = qw/
 /;
 my %small_primes = map { $_ => 1 } @small_primes;
 
-=head1 NAME
+# ABSTRACT: Math::Factoring - Advanced Factoring Algorithms
 
-Math::Factoring - Advanced Factoring Algorithms
+=head1 SYNOPSIS
 
-=head1 VERSION
+    use Math::Factoring;
+    my $n = 42;
+    my @factors = factor(42); # 2 3 7
 
-Version 0.01
+=head1 AUTHOR
+
+Jonathan "Duke" Leto, C<< <jonathan at leto.net> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-math-factoring at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Factoring>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+You can also submit patches or file a Github issue:
+https://github.com/leto/Math-Factoring
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Math::Factoring
+
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Math::Factoring>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Math::Factoring>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Math::Factoring>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Math::Factoring>
+
+=back
+
+=head1 ACKNOWLEDGEMENTS
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2009-2012 Jonathan "Duke" Leto, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 
 =cut
-
-our $VERSION = '0.01';
 
 sub _random()
 {
@@ -81,6 +133,13 @@ sub _factor_pollard_rho($$$)
     return 0;
 
 }
+
+=head2 factor($number)
+
+Returns the prime factors of $number as an array. Currently this falls back to trial division.
+The values in the array are plain Perl string variables, not Math::GMPz objects.
+
+=cut
 
 sub factor($)
 {
@@ -133,6 +192,12 @@ sub factor_trial($)
     return sort { $a <=> $b } @factors;
 }
 
+=head2 factor_pollard_rho($number)
+
+Return the factors of $number as an array using the Pollard-Rho algorithm.
+
+=cut
+
 sub factor_pollard_rho($)
 {
     my $n   = GMP->new($_[0]);
@@ -154,66 +219,5 @@ sub factor_pollard_rho($)
 
     return sort { $a <=> $b } @factors;
 }
-=head1 SYNOPSIS
-
-    use Math::Factoring;
-    my $n = 42;
-    my @factors = factor(42); # 2 3 7
-
-=head1 AUTHOR
-
-Jonathan Leto, C<< <jonathan at leto.net> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-math-factoring at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Factoring>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Math::Factoring
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Math::Factoring>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Math::Factoring>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Math::Factoring>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Math::Factoring>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 Jonathan Leto, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-
-=cut
 
 1; # End of Math::Factoring
