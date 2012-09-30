@@ -1,8 +1,8 @@
-Math::Factoring
+# Math::Factoring
 
 This module implements factoring algorithms for BigInts, provided by Math::GMPz.
 
-INSTALLATION
+# Installation
 
 To install this module, run the following commands:
 
@@ -11,7 +11,7 @@ To install this module, run the following commands:
 	./Build test
 	./Build install
 
-SUPPORT AND DOCUMENTATION
+# Support and Documentation
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -33,9 +33,9 @@ You can also look for information at:
         http://search.cpan.org/dist/Math::Factoring
 
 
-COPYRIGHT AND LICENCE
+# Copyright and License
 
-Copyright (C) 2009 Jonathan Leto
+Copyright (C) 2009-2012 Jonathan "Duke" Leto
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
