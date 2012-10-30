@@ -2,6 +2,8 @@
 
 This module implements factoring algorithms for BigInts, provided by Math::GMPz.
 
+[![Build Status](https://secure.travis-ci.org/leto/Math-Factoring.png)](http://travis-ci.org/leto/Math-Factoring)
+
 # Installation
 
 To install this module, run the following commands:
